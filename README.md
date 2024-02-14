@@ -6,3 +6,4 @@ This application will only contain API, so it will be used in coordination with 
 
 - Adonis JS
 - Heroku
+- Postgresql
