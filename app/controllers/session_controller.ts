@@ -13,7 +13,7 @@ export default class SessionController {
     // Login user
     await auth.use('web').login(user)
 
-    return response.json({ message: 'Logged in successfully' })
+    return response.json(user)
   }
 
   async signup({ request, auth, response }: HttpContext) {
@@ -30,6 +30,6 @@ export default class SessionController {
     // Login user
     await auth.use('web').login(user)
 
-    return response.json({ message: 'User created successfully' })
+    return response.json(user)
   }
 }
