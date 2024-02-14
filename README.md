@@ -5,5 +5,5 @@ This application will only contain API, so it will be used in coordination with 
 ## Stack
 
 - Adonis JS
-- Heroku
+- Heroku for deployment
 - Postgresql
