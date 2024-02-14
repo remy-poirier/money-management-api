@@ -15,12 +15,24 @@ router.get('/', async () => {
   }
 })
 
+// Users routes
+router.get('users', '#controllers/users_controller.index').use(middleware.auth())
+
+// Session routes
 router.post('signup', '#controllers/session_controller.signup')
 router.post('signin', '#controllers/session_controller.signin')
-router.get('users', '#controllers/users_controller.index').use(middleware.auth())
+
+router
+  .get('auth', async ({ auth }) => {
+    const isAuthenticated = await auth.check()
+    return isAuthenticated
+      ? { state: 'authenticated', user: auth.user }
+      : { state: 'unauthenticated' }
+  })
+  .use(middleware.auth())
 router
   .post('signout', async ({ auth, response }) => {
     await auth.use('web').logout()
-    return response.redirect('/login')
+    return response.json(true)
   })
   .use(middleware.auth())

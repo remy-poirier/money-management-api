@@ -17,7 +17,6 @@ export default class SessionController {
   }
 
   async signup({ request, auth, response }: HttpContext) {
-    // Get user data
     const data = request.all()
     const payload = await credentialsValidator.validate(data)
 
