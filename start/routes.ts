@@ -32,13 +32,18 @@ router
   })
   .use(middleware.auth())
 
+router.get('categories', '#controllers/categories_controller.index')
+
 // Transactions
 router
   .group(() => {
     router.get('', '#controllers/transactions_controller.index')
+    router.put('', '#controllers/transactions_controller.addTransaction')
     router.get('wage', '#controllers/transactions_controller.getWage')
     router.put('wage', '#controllers/transactions_controller.addWage')
     router.post('wage', '#controllers/transactions_controller.editWage')
+    router.post('toggle-collected', '#controllers/transactions_controller.toggleCollected')
+    router.post('archive', '#controllers/transactions_controller.archive')
   })
   .prefix('transactions')
   .use(middleware.auth())

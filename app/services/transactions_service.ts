@@ -1,6 +1,9 @@
-import db from '@adonisjs/lucid/services/db'
 import { HttpContext } from '@adonisjs/core/http'
-import { wageValidator } from '#validators/transaction'
+import {
+  createTransactionValidator,
+  toggleCollectedTransactionValidator,
+  wageValidator,
+} from '#validators/transaction'
 import Transaction from '#models/transaction'
 import Category from '#models/category'
 import User from '#models/user'
@@ -10,19 +13,16 @@ export default class TransactionsService {
     const page = request.input('page', 1)
     const type = request.input('type', '*')
 
-    console.log('request input => ', type)
     const userId = auth.user?.id
     if (!userId) {
       throw new Error(`User with id ${userId} not found`)
     }
     const limit = 2
 
-    return await db
-      .query()
-      .from('transactions')
-      .select('*')
+    return await Transaction.query()
       .where('user_id', userId)
       .where('type', type)
+      .where('archived', false)
       .orderBy('created_at', 'desc')
       .paginate(page, limit)
   }
@@ -141,5 +141,113 @@ export default class TransactionsService {
     await user.save()
 
     return user.balance
+  }
+
+  async addTransaction({ request, auth }: HttpContext) {
+    const userId = auth.user?.id
+    if (!userId) {
+      throw new Error(`User with id ${userId} not found`)
+    }
+    const data = request.all()
+
+    const transaction = await createTransactionValidator.validate(data)
+
+    const user = await User.findBy('id', userId)
+
+    if (!user) {
+      throw new Error(`User with id ${userId} not found`)
+    }
+
+    const newTransaction = await Transaction.create({
+      name: transaction.name,
+      amount: transaction.amount,
+      day: transaction.day,
+      collected: transaction.collected,
+      type: transaction.type,
+      archived: transaction.archived,
+      user_id: userId,
+      category_id: transaction.category_id,
+    })
+
+    if (newTransaction.collected && newTransaction.type !== 'REFUND') {
+      user.balance -= newTransaction.amount
+    }
+
+    if (newTransaction.collected && newTransaction.type === 'REFUND') {
+      user.balance += newTransaction.amount
+    }
+    await user.save()
+
+    return user.balance
+  }
+
+  async toggleCollected({ auth, request }: HttpContext) {
+    const userId = auth.user?.id
+    if (!userId) {
+      throw new Error(`User with id ${userId} not found`)
+    }
+
+    const data = request.all()
+    const { id } = await toggleCollectedTransactionValidator.validate(data)
+    const user = await User.findBy('id', userId)
+
+    if (!user) {
+      throw new Error(`User with id ${userId} not found`)
+    }
+
+    const transaction = await Transaction.findBy('id', id)
+    if (!transaction) {
+      throw new Error(`Transaction with id ${id} not found`)
+    }
+
+    await transaction.merge({ collected: !transaction.collected }).save()
+
+    /**
+     * Many use cases here about updating the balance of the user
+     * depending on the type of transaction and if it's collected or not
+     */
+
+    if (transaction.type === 'REFUND') {
+      if (transaction.collected) {
+        user.balance += transaction.amount
+      } else {
+        user.balance -= transaction.amount
+      }
+    }
+
+    if (transaction.type !== 'REFUND') {
+      if (transaction.collected) {
+        user.balance -= transaction.amount
+      } else {
+        user.balance += transaction.amount
+      }
+    }
+
+    await user.save()
+    return transaction
+  }
+
+  async archive({ auth, request }: HttpContext) {
+    const userId = auth.user?.id
+    if (!userId) {
+      throw new Error(`User with id ${userId} not found`)
+    }
+
+    const data = request.all()
+    const { id } = await toggleCollectedTransactionValidator.validate(data)
+    const user = await User.findBy('id', userId)
+
+    if (!user) {
+      throw new Error(`User with id ${userId} not found`)
+    }
+
+    const transaction = await Transaction.findBy('id', id)
+    if (!transaction) {
+      throw new Error(`Transaction with id ${id} not found`)
+    }
+
+    await transaction.merge({ archived: !transaction.archived }).save()
+
+    return transaction
   }
 }

@@ -23,3 +23,5 @@ export const createTransactionValidator = vine.compile(
 export const updateTransactionValidator = vine.compile(vine.object({}))
 
 export const wageValidator = vine.compile(vine.object({ amount: vine.number() }))
+
+export const toggleCollectedTransactionValidator = vine.compile(vine.object({ id: vine.string() }))

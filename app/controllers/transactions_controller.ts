@@ -10,6 +10,10 @@ export default class TransactionsController {
     return this.transactionsService.all(request)
   }
 
+  async addTransaction(request: HttpContext) {
+    return this.transactionsService.addTransaction(request)
+  }
+
   async getWage(request: HttpContext) {
     const wage = await this.transactionsService.getLastWage(request)
 
@@ -20,11 +24,18 @@ export default class TransactionsController {
   }
 
   async addWage(request: HttpContext) {
-    console.log('all params => ', request.request.all())
     return this.transactionsService.addWage(request)
   }
 
   async editWage(request: HttpContext) {
     return this.transactionsService.editWage(request)
+  }
+
+  async toggleCollected(request: HttpContext) {
+    return this.transactionsService.toggleCollected(request)
+  }
+
+  async archive(request: HttpContext) {
+    return this.transactionsService.archive(request)
   }
 }
