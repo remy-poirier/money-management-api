@@ -19,14 +19,12 @@ router.get('/', async () => {
 router.post('signup', '#controllers/session_controller.signup')
 router.post('signin', '#controllers/session_controller.signin')
 
-router
-  .get('auth', async ({ auth }) => {
-    const isAuthenticated = await auth.check()
-    return isAuthenticated
-      ? { state: 'authenticated', user: auth.user }
-      : { state: 'unauthenticated' }
-  })
-  .use(middleware.auth())
+router.get('auth', async ({ auth }) => {
+  const isAuthenticated = await auth.check()
+  return isAuthenticated
+    ? { state: 'authenticated', user: auth.user }
+    : { state: 'unauthenticated' }
+})
 router
   .post('signout', async ({ auth, response }) => {
     await auth.use('web').logout()
