@@ -9,11 +9,11 @@ import app from '@adonisjs/core/services/app'
  */
 const corsConfig = defineConfig({
   enabled: true,
-  origin: app.inProduction ? 'https://api.money-manager.tech/*' : '*',
+  origin: app.inProduction ? 'https://api.money-manager.tech' : '*',
   methods: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE'],
   headers: true,
   exposeHeaders: [],
-  credentials: true,
+  // credentials: true,
   maxAge: 90,
 })
 
