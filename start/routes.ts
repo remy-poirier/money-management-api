@@ -32,6 +32,17 @@ router
   })
   .use(middleware.auth())
 
+// Transactions
+router
+  .group(() => {
+    router.get('', '#controllers/transactions_controller.index')
+    router.get('wage', '#controllers/transactions_controller.getWage')
+    router.put('wage', '#controllers/transactions_controller.addWage')
+    router.post('wage', '#controllers/transactions_controller.editWage')
+  })
+  .prefix('transactions')
+  .use(middleware.auth())
+
 // Admin routes
 router
   .group(() => {

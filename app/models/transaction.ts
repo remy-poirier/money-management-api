@@ -1,5 +1,6 @@
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, beforeCreate, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
+import { v4 as uuidv4 } from 'uuid'
 
 export default class Transaction extends BaseModel {
   @column({ isPrimary: true })
@@ -34,4 +35,9 @@ export default class Transaction extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updated_at: DateTime
+
+  @beforeCreate()
+  static generateId(transaction: Transaction) {
+    transaction.id = uuidv4()
+  }
 }
