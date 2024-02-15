@@ -1,4 +1,5 @@
 import { defineConfig } from '@adonisjs/cors'
+import app from '@adonisjs/core/services/app'
 
 /**
  * Configuration options to tweak the CORS policy. The following
@@ -8,7 +9,7 @@ import { defineConfig } from '@adonisjs/cors'
  */
 const corsConfig = defineConfig({
   enabled: true,
-  origin: '*',
+  origin: app.inProduction ? ['https://money-manager.tech'] : ['http://localhost:5173'],
   methods: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE'],
   headers: true,
   exposeHeaders: [],
