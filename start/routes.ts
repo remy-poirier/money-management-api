@@ -15,9 +15,6 @@ router.get('/', async () => {
   }
 })
 
-// Users routes
-router.get('users', '#controllers/users_controller.index').use(middleware.auth())
-
 // Session routes
 router.post('signup', '#controllers/session_controller.signup')
 router.post('signin', '#controllers/session_controller.signin')
@@ -36,3 +33,11 @@ router
     return response.json(true)
   })
   .use(middleware.auth())
+
+// Admin routes
+router
+  .group(() => {
+    router.get('users', '#controllers/users_controller.index')
+  })
+  .prefix('admin')
+  .use(middleware.admin())
