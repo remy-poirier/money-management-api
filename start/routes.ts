@@ -39,6 +39,7 @@ router
   .group(() => {
     router.get('', '#controllers/transactions_controller.index')
     router.put('', '#controllers/transactions_controller.addTransaction')
+    router.post('', '#controllers/transactions_controller.update')
     router.get('wage', '#controllers/transactions_controller.getWage')
     router.put('wage', '#controllers/transactions_controller.addWage')
     router.post('wage', '#controllers/transactions_controller.editWage')

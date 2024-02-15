@@ -38,4 +38,8 @@ export default class TransactionsController {
   async archive(request: HttpContext) {
     return this.transactionsService.archive(request)
   }
+
+  async update(request: HttpContext) {
+    return this.transactionsService.update(request)
+  }
 }

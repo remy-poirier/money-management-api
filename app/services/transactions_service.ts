@@ -2,6 +2,7 @@ import { HttpContext } from '@adonisjs/core/http'
 import {
   createTransactionValidator,
   toggleCollectedTransactionValidator,
+  updateTransactionValidator,
   wageValidator,
 } from '#validators/transaction'
 import Transaction from '#models/transaction'
@@ -17,13 +18,14 @@ export default class TransactionsService {
     if (!userId) {
       throw new Error(`User with id ${userId} not found`)
     }
-    const limit = 2
+    const limit = 10
 
     return await Transaction.query()
       .where('user_id', userId)
       .where('type', type)
       .where('archived', false)
-      .orderBy('created_at', 'desc')
+      .orderBy('day', 'desc')
+      .orderBy('updated_at', 'desc')
       .paginate(page, limit)
   }
 
@@ -249,5 +251,30 @@ export default class TransactionsService {
     await transaction.merge({ archived: !transaction.archived }).save()
 
     return transaction
+  }
+
+  async update({ request, auth }: HttpContext) {
+    const userId = auth.user?.id
+    if (!userId) {
+      throw new Error(`User with id ${userId} not found`)
+    }
+
+    const data = request.all()
+    const transactionValidation = await updateTransactionValidator.validate(data)
+
+    const transaction = await Transaction.findBy('id', transactionValidation.id)
+
+    if (!transaction) {
+      throw new Error(`Transaction with id ${transactionValidation.id} not found`)
+    }
+
+    const updatedTransaction = await transaction.merge(transactionValidation).save()
+
+    /**
+     * We will prevent the user from updating the transaction if it's already collected or archived.
+     * So in theory, we don't need to update the balance of the user here.
+     */
+
+    return updatedTransaction
   }
 }
