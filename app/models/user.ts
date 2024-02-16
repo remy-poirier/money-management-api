@@ -31,6 +31,12 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   declare balance: number
 
+  @column()
+  declare is_onboarded: boolean
+
+  @column()
+  declare onboarding_status: 'WELCOME' | 'AMOUNT_ON_ACCOUNT' | 'RECURRING' | 'ONBOARDED'
+
   @column.dateTime({ autoCreate: true })
   declare created_at: DateTime
 

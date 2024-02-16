@@ -50,6 +50,16 @@ router
   .prefix('transactions')
   .use(middleware.auth())
 
+// User onboarding
+router
+  .group(() => {
+    router.post('update', '#controllers/users_controller.updateOnboardingStatus')
+    router.post('balance', '#controllers/users_controller.updateBalance')
+    router.post('transactions', '#controllers/users_controller.updateRecurringTransactions')
+  })
+  .prefix('onboarding')
+  .use(middleware.auth())
+
 // Statistics
 router.get('statistics', '#controllers/statistics_controller.index').use(middleware.auth())
 
