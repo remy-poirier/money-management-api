@@ -45,9 +45,13 @@ router
     router.post('wage', '#controllers/transactions_controller.editWage')
     router.post('toggle-collected', '#controllers/transactions_controller.toggleCollected')
     router.post('archive', '#controllers/transactions_controller.archive')
+    router.post('reset', '#controllers/transactions_controller.reset')
   })
   .prefix('transactions')
   .use(middleware.auth())
+
+// Statistics
+router.get('statistics', '#controllers/statistics_controller.index').use(middleware.auth())
 
 // Admin routes
 router

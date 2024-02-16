@@ -42,4 +42,8 @@ export default class TransactionsController {
   async update(request: HttpContext) {
     return this.transactionsService.update(request)
   }
+
+  async reset(request: HttpContext) {
+    return this.transactionsService.reset(request)
+  }
 }

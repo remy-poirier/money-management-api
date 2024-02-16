@@ -305,4 +305,39 @@ export default class TransactionsService {
 
     return updatedTransaction
   }
+
+  async reset({ auth, response }: HttpContext) {
+    const userId = auth.user?.id
+    if (!userId) {
+      throw new Error(`User with id ${userId} not found`)
+    }
+
+    /**
+     * Many things to do here:
+     *
+     * 1. Update status of all user's RECURRING transactions with collected = true to collected = false
+     * 2. Delete all user's ONE_TIME transactions with collected = true
+     * 3. Delete status of all user's REFUND transactions with collected = true to collected = false
+     */
+
+    await Transaction.query()
+      .where('user_id', userId)
+      .where('type', 'RECURRING')
+      .where('collected', true)
+      .update({ collected: false })
+
+    await Transaction.query()
+      .where('user_id', userId)
+      .where('type', 'ONE_TIME')
+      .where('collected', true)
+      .delete()
+
+    await Transaction.query()
+      .where('user_id', userId)
+      .where('type', 'REFUND')
+      .where('collected', true)
+      .delete()
+
+    return response.json(true)
+  }
 }
