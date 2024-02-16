@@ -13,6 +13,9 @@ export default class TransactionsService {
   async all({ request, auth }: HttpContext) {
     const page = request.input('page', 1)
     const type = request.input('type', '*')
+    const collected = request.input('collected', '*')
+    const search = request.input('search', undefined)
+    const orderByDirection = request.input('orderByDirection', 'desc')
 
     const userId = auth.user?.id
     if (!userId) {
@@ -20,12 +23,26 @@ export default class TransactionsService {
     }
     const limit = 10
 
-    return await Transaction.query()
+    const q = Transaction.query()
+      .preload('category')
       .where('user_id', userId)
       .where('type', type)
       .where('archived', false)
-      .orderBy('day', 'desc')
-      .orderBy('updated_at', 'desc')
+
+    if (collected === 'true') {
+      q.where('collected', true)
+    }
+    if (collected === 'false') {
+      q.where('collected', false)
+    }
+
+    if (search) {
+      q.whereILike('name', `%${search}%`)
+    }
+
+    return await q
+      .orderBy('day', orderByDirection)
+      .orderBy('created_at', 'desc')
       .paginate(page, limit)
   }
 
@@ -249,6 +266,17 @@ export default class TransactionsService {
     }
 
     await transaction.merge({ archived: !transaction.archived }).save()
+
+    // If transaction was colllected, we need to update the balance of the user
+    if (transaction.collected) {
+      if (transaction.type === 'REFUND') {
+        user.balance -= transaction.amount
+      } else {
+        user.balance += transaction.amount
+      }
+    }
+
+    await user.save()
 
     return transaction
   }
