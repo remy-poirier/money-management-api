@@ -123,7 +123,6 @@ export default class StatisticsService {
       .where('type', 'RECURRING')
       .where('collected', false)
       .count('* as total')
-
       .first()
 
     const countTotalTransctionsQ = await db
@@ -168,35 +167,35 @@ export default class StatisticsService {
         recurringNotCollectedSum
       ).toFixed(2),
       refunds: {
-        collected: refundsCollectedSum,
-        toCome: refundsNotCollectedSum,
+        collected: +refundsCollectedSum.toFixed(2),
+        toCome: +refundsNotCollectedSum.toFixed(2),
         total: +(refundsCollectedSum + refundsNotCollectedSum).toFixed(2),
       },
       oneTime: {
-        collected: oneTimeCollectedSum,
-        toCome: oneTimeNotCollectedSum,
+        collected: +oneTimeCollectedSum.toFixed(2),
+        toCome: +oneTimeNotCollectedSum.toFixed(2),
         total: +(oneTimeCollectedSum + oneTimeNotCollectedSum).toFixed(2),
       },
       recurring: {
-        collected: recurringCollectedSum,
-        toCome: recurringNotCollectedSum,
+        collected: +recurringCollectedSum.toFixed(2),
+        toCome: +recurringNotCollectedSum.toFixed(2),
         total: +(recurringCollectedSum + recurringNotCollectedSum).toFixed(2),
       },
       transactions: {
         refunds: {
           collected: countRefundsCollected,
           toCome: countRefundsNotCollected,
-          total: +(countRefundsCollected + countRefundsNotCollected).toFixed(2),
+          total: countRefundsCollected + countRefundsNotCollected,
         },
         oneTime: {
           collected: countOneTimeCollected,
           toCome: countOneTimeNotCollected,
-          total: +(countOneTimeCollected + countOneTimeNotCollected).toFixed(2),
+          total: countOneTimeCollected + countOneTimeNotCollected,
         },
         recurring: {
           collected: countRecurringCollected,
           toCome: countRecurringNotCollected,
-          total: +(countRecurringCollected + countRecurringNotCollected).toFixed(2),
+          total: countRecurringCollected + countRecurringNotCollected,
         },
         total: countTotalTransctions,
       },
