@@ -10,6 +10,26 @@ import Category from '#models/category'
 import User from '#models/user'
 
 export default class TransactionsService {
+  async checkCanAlterTransaction(user: User, transactionId: string) {
+    /**
+     * A user can alter a transaction in 2 cases:
+     * 1. It's his own transaction (user_id = auth.user.id)
+     * 2. Current user is an admin (auth.user.isAdmin = true)
+     * Otherwise we throw an error
+     */
+
+    const userId = user.id
+
+    const transaction = await Transaction.findBy('id', transactionId)
+    if (!transaction) {
+      throw new Error(`Transaction with id ${transactionId} not found`)
+    }
+
+    if (transaction.user_id !== userId && !user.is_admin) {
+      throw new Error('You are not allowed to alter this transaction')
+    }
+  }
+
   async all({ request, auth }: HttpContext) {
     const page = request.input('page', 1)
     const type = request.input('type', '*')
@@ -140,6 +160,8 @@ export default class TransactionsService {
       throw new Error(`User with id ${userId} not found`)
     }
 
+    await this.checkCanAlterTransaction(user, currentWage.id)
+
     // remove old balance before adding new one
     user.balance = +(user.balance - currentWage.amount).toFixed(2)
 
@@ -208,6 +230,9 @@ export default class TransactionsService {
 
     const data = request.all()
     const { id } = await toggleCollectedTransactionValidator.validate(data)
+
+    await this.checkCanAlterTransaction(auth.user, id)
+
     const user = await User.findBy('id', userId)
 
     if (!user) {
@@ -254,6 +279,9 @@ export default class TransactionsService {
 
     const data = request.all()
     const { id } = await toggleCollectedTransactionValidator.validate(data)
+
+    await this.checkCanAlterTransaction(auth.user, id)
+
     const user = await User.findBy('id', userId)
 
     if (!user) {
@@ -289,6 +317,9 @@ export default class TransactionsService {
 
     const data = request.all()
     const transactionValidation = await updateTransactionValidator.validate(data)
+
+    // Check if user can alter the transaction
+    await this.checkCanAlterTransaction(auth.user, transactionValidation.id)
 
     const transaction = await Transaction.findBy('id', transactionValidation.id)
 
