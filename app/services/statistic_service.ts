@@ -156,39 +156,47 @@ export default class StatisticsService {
     const countTotalTransctions = Number.parseInt(countTotalTransctionsQ.total) ?? 0
 
     return response.json({
-      totalToCome: refundsNotCollectedSum - oneTimeNotCollectedSum - recurringNotCollectedSum,
-      amountLeftForMonth:
-        balance + refundsNotCollectedSum - oneTimeNotCollectedSum - recurringNotCollectedSum,
+      totalToCome: +(
+        refundsNotCollectedSum -
+        oneTimeNotCollectedSum -
+        recurringNotCollectedSum
+      ).toFixed(2),
+      amountLeftForMonth: +(
+        balance +
+        refundsNotCollectedSum -
+        oneTimeNotCollectedSum -
+        recurringNotCollectedSum
+      ).toFixed(2),
       refunds: {
         collected: refundsCollectedSum,
         toCome: refundsNotCollectedSum,
-        total: refundsCollectedSum + refundsNotCollectedSum,
+        total: +(refundsCollectedSum + refundsNotCollectedSum).toFixed(2),
       },
       oneTime: {
         collected: oneTimeCollectedSum,
         toCome: oneTimeNotCollectedSum,
-        total: oneTimeCollectedSum + oneTimeNotCollectedSum,
+        total: +(oneTimeCollectedSum + oneTimeNotCollectedSum).toFixed(2),
       },
       recurring: {
         collected: recurringCollectedSum,
         toCome: recurringNotCollectedSum,
-        total: recurringCollectedSum + recurringNotCollectedSum,
+        total: +(recurringCollectedSum + recurringNotCollectedSum).toFixed(2),
       },
       transactions: {
         refunds: {
           collected: countRefundsCollected,
           toCome: countRefundsNotCollected,
-          total: countRefundsCollected + countRefundsNotCollected,
+          total: +(countRefundsCollected + countRefundsNotCollected).toFixed(2),
         },
         oneTime: {
           collected: countOneTimeCollected,
           toCome: countOneTimeNotCollected,
-          total: countOneTimeCollected + countOneTimeNotCollected,
+          total: +(countOneTimeCollected + countOneTimeNotCollected).toFixed(2),
         },
         recurring: {
           collected: countRecurringCollected,
           toCome: countRecurringNotCollected,
-          total: countRecurringCollected + countRecurringNotCollected,
+          total: +(countRecurringCollected + countRecurringNotCollected).toFixed(2),
         },
         total: countTotalTransctions,
       },

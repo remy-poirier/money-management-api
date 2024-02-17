@@ -141,7 +141,7 @@ export default class TransactionsService {
     }
 
     // remove old balance before adding new one
-    user.balance -= currentWage.amount
+    user.balance = +(user.balance - currentWage.amount).toFixed(2)
 
     await currentWage.delete()
 
@@ -156,7 +156,7 @@ export default class TransactionsService {
       category_id: apiCategory.id,
     })
 
-    user.balance += newWage.amount
+    user.balance = +(user.balance + newWage.amount).toFixed(2)
     await user.save()
 
     return user.balance
@@ -189,11 +189,11 @@ export default class TransactionsService {
     })
 
     if (newTransaction.collected && newTransaction.type !== 'REFUND') {
-      user.balance -= newTransaction.amount
+      user.balance = +(user.balance - newTransaction.amount).toFixed(2)
     }
 
     if (newTransaction.collected && newTransaction.type === 'REFUND') {
-      user.balance += newTransaction.amount
+      user.balance = +(user.balance + newTransaction.amount).toFixed(2)
     }
     await user.save()
 
@@ -228,17 +228,17 @@ export default class TransactionsService {
 
     if (transaction.type === 'REFUND') {
       if (transaction.collected) {
-        user.balance += transaction.amount
+        user.balance = +(user.balance + transaction.amount).toFixed(2)
       } else {
-        user.balance -= transaction.amount
+        user.balance = +(user.balance - transaction.amount).toFixed(2)
       }
     }
 
     if (transaction.type !== 'REFUND') {
       if (transaction.collected) {
-        user.balance -= transaction.amount
+        user.balance = +(user.balance - transaction.amount).toFixed(2)
       } else {
-        user.balance += transaction.amount
+        user.balance = +(user.balance + transaction.amount).toFixed(2)
       }
     }
 
@@ -270,9 +270,9 @@ export default class TransactionsService {
     // If transaction was colllected, we need to update the balance of the user
     if (transaction.collected) {
       if (transaction.type === 'REFUND') {
-        user.balance -= transaction.amount
+        user.balance = +(user.balance - transaction.amount).toFixed(2)
       } else {
-        user.balance += transaction.amount
+        user.balance = +(user.balance + transaction.amount)
       }
     }
 
