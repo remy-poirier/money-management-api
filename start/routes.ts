@@ -8,6 +8,7 @@
 */
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
+import User from '#models/user'
 
 router.get('/', async () => {
   return {
@@ -27,7 +28,10 @@ router.get('auth', async ({ auth }) => {
 })
 router
   .post('signout', async ({ auth, response }) => {
-    await auth.use('web').logout()
+    const user = await auth.use('api').authenticate()
+    if (user) {
+      await User.accessTokens.delete(user, user.currentAccessToken.identifier)
+    }
     return response.json(true)
   })
   .use(middleware.auth())
