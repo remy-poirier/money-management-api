@@ -396,7 +396,7 @@ export default class TransactionsService {
       type: 'ONE_TIME',
       archived: false,
       user_id: user.id,
-      category_id: '8fbd6c98-cc0f-11ee-9489-325096b39f47\t',
+      category_id: '8fbd6c98-cc0f-11ee-9489-325096b39f47',
     })
 
     return newTransaction
