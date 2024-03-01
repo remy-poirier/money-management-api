@@ -46,4 +46,8 @@ export default class TransactionsController {
   async reset(request: HttpContext) {
     return this.transactionsService.reset(request)
   }
+
+  async addViaShortcut(request: HttpContext) {
+    return this.transactionsService.addViaShortcut(request)
+  }
 }

@@ -36,3 +36,12 @@ export const updateTransactionValidator = vine.compile(
 export const wageValidator = vine.compile(vine.object({ amount: vine.number() }))
 
 export const toggleCollectedTransactionValidator = vine.compile(vine.object({ id: vine.string() }))
+
+export const addViaShortcutValidator = vine.compile(
+  vine.object({
+    amount: vine.number(),
+    name: vine.string(),
+    user_id: vine.string(),
+    shortcut_secret: vine.string(),
+  })
+)

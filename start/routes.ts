@@ -74,3 +74,10 @@ router
   })
   .prefix('admin')
   .use(middleware.admin())
+
+// Shortcut route
+router
+  .group(() => {
+    router.post('add-transaction', '#controllers/transactions_controller.addViaShortcut')
+  })
+  .prefix('shortcuts')

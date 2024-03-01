@@ -1,5 +1,6 @@
 import { HttpContext } from '@adonisjs/core/http'
 import {
+  addViaShortcutValidator,
   createTransactionValidator,
   toggleCollectedTransactionValidator,
   updateTransactionValidator,
@@ -370,5 +371,34 @@ export default class TransactionsService {
       .delete()
 
     return response.json(true)
+  }
+
+  async addViaShortcut({ request }: HttpContext) {
+    const today = new Date().getDate()
+    const data = request.all()
+    const dataValidation = await addViaShortcutValidator.validate(data)
+
+    const user = await User.findBy('id', dataValidation.user_id)
+    if (!user) {
+      throw new Error(`User with id ${dataValidation.user_id} not found`)
+    }
+
+    // ensure the user has the correct shortcut secret
+    if (user.shortcut_secret !== dataValidation.shortcut_secret) {
+      throw new Error('Invalid shortcut secret')
+    }
+
+    const newTransaction = await Transaction.create({
+      name: dataValidation.name,
+      amount: dataValidation.amount,
+      day: today,
+      collected: false,
+      type: 'ONE_TIME',
+      archived: false,
+      user_id: user.id,
+      category_id: '8fbd6c98-cc0f-11ee-9489-325096b39f47\t',
+    })
+
+    return newTransaction
   }
 }
