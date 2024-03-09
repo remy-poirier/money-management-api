@@ -50,4 +50,8 @@ export default class TransactionsController {
   async addViaShortcut(request: HttpContext) {
     return this.transactionsService.addViaShortcut(request)
   }
+
+  async nextToCollect(request: HttpContext) {
+    return this.transactionsService.nextToCollect(request)
+  }
 }

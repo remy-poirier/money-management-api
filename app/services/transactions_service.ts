@@ -67,6 +67,24 @@ export default class TransactionsService {
       .paginate(page, limit)
   }
 
+  async nextToCollect({ auth }: HttpContext) {
+    const userId = auth.user?.id
+    if (!userId) {
+      throw new Error(`User with id ${userId} not found`)
+    }
+    const limit = 10
+
+    // get 10 next transactions to collect, these are transaction of type either RECURRING or ONE_TIME and with day closest to today
+    return Transaction.query()
+      .preload('category')
+      .where('user_id', userId)
+      .where('collected', false)
+      .where('archived', false)
+      .whereIn('type', ['RECURRING', 'ONE_TIME'])
+      .orderBy('day', 'asc')
+      .limit(limit)
+  }
+
   async getLastWage({ auth }: HttpContext) {
     const userId = auth.user?.id
     if (!userId) {

@@ -42,6 +42,7 @@ router.get('categories', '#controllers/categories_controller.index')
 router
   .group(() => {
     router.get('', '#controllers/transactions_controller.index')
+    router.get('next-to-collect', '#controllers/transactions_controller.nextToCollect')
     router.put('', '#controllers/transactions_controller.addTransaction')
     router.post('', '#controllers/transactions_controller.update')
     router.get('wage', '#controllers/transactions_controller.getWage')
