@@ -47,6 +47,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   declare shortcut_secret: string | null
 
+  @column()
+  declare currency: string
+
   static accessTokens = DbAccessTokensProvider.forModel(User, {
     expiresIn: '30 days',
     prefix: 'oat_',

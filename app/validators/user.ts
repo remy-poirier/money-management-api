@@ -9,7 +9,12 @@ export const onboardingStatusValidator = vine.compile(
   })
 )
 
-export const onboardingBalanceValidator = vine.compile(vine.object({ balance: vine.number() }))
+export const onboardingBalanceValidator = vine.compile(
+  vine.object({
+    balance: vine.number(),
+    currency: vine.string(),
+  })
+)
 
 export const onboardingRecurringTransactionsValidator = vine.compile(
   vine.object({

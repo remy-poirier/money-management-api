@@ -45,6 +45,7 @@ export default class UserService {
     const balanceValidation = await onboardingBalanceValidator.validate(data)
 
     user.balance = balanceValidation.balance
+    user.currency = balanceValidation.currency
     await user.save()
     return response.json({ balance: user.balance })
   }
