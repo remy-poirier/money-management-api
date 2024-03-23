@@ -43,5 +43,6 @@ export const addViaShortcutValidator = vine.compile(
     name: vine.string(),
     user_id: vine.string(),
     shortcut_secret: vine.string(),
+    category_id: vine.string(),
   })
 )
