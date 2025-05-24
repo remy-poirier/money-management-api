@@ -419,4 +419,19 @@ export default class TransactionsService {
 
     return newTransaction
   }
+
+  async last({ auth }: HttpContext) {
+    // This will return the five last transactions collected via their date
+    const userId = auth.user?.id
+    if (!userId) {
+      throw new Error(`User with id ${userId} not found`)
+    }
+
+    const query = Transaction.query()
+      .preload('category')
+      .where('user_id', userId)
+      .where('collected', true)
+
+    return await query.orderBy('day', 'desc').orderBy('created_at', 'desc').limit(5)
+  }
 }

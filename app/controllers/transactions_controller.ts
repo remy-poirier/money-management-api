@@ -54,4 +54,8 @@ export default class TransactionsController {
   async nextToCollect(request: HttpContext) {
     return this.transactionsService.nextToCollect(request)
   }
+
+  async last(request: HttpContext) {
+    return this.transactionsService.last(request)
+  }
 }
